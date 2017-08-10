@@ -168,6 +168,9 @@ public class QaulApplication extends Application {
         File filesPath = new File(dataPathString +"/files");
         if(!filesPath.exists())
         {
+        	Log.i(MSG_TAG, "copy www folder to data directory");
+        	qaulCopyFileOrDir("www");
+        	
         	Log.i(MSG_TAG, "copy all files to data directory");
         	qaulCopyFileOrDir("files");
         }
