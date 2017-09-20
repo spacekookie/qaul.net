@@ -8,10 +8,6 @@ To configure the cmake build configuration, the following options exist.
 
 General options:
 
-* -DPORT=BUILDPLATFORM
-  * This option sets platform to build for. This option is detected
-    automatically for most platforms.
-  * The following build platforms exist: ANDROID, WINDOWS, OSX, LINUX
 * -DGUI=GUI_TOOKIT_TO_USE
   * Sets graphics user interface framework. By default cmake tries to
     automatically figure out what toolkit to use.

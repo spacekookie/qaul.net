@@ -5,7 +5,7 @@ set(CommonCMakeArgs
     -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
 )
 
-if (${PORT} STREQUAL "ANDROID")
+if (ANDROID)
     set(CommonCMakeArgs
         ${CommonCMakeArgs}
         -DANDROID_TOOLCHAIN=${ANDROID_TOOLCHAIN}
@@ -18,10 +18,9 @@ set(MbedTlsCMakeArgs
     ${CommonCMakeArgs}
 	-DCMAKE_INSTALL_PREFIX=${PROJECT_BINARY_DIR}/external/mbedtls
 	-DENABLE_PROGRAMS=OFF
-
 )
 
-if (${PORT} STREQUAL "WINDOWS")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 set(MbedTlsCMakeArgs
 	${MbedTlsCMakeArgs}
 	-DENABLE_TESTING=OFF
@@ -95,20 +94,4 @@ add_custom_target(dl_olsr
 
 option(Raspberry "Raspberry" 0)
 
-if (${PORT} STREQUAL "ANDROID")
-    include(BuildAndroid.cmake)
-elseif (${PORT} STREQUAL "OPENWRT")
-    include(BuildOpenWrt.cmake)
-elseif (${PORT} STREQUAL "WINDOWS")
-    include(BuildWindows.cmake)
-elseif (${PORT} STREQUAL "OSX")
-    include(BuildOSX.cmake)
-elseif (${PORT} STREQUAL "LINUX")
-    if (Raspberry)
-	include(BuildRaspberry.cmake)
-    else ()
-	include(BuildLinux.cmake)
-    endif ()
-else ()
-    message(FATAL_ERROR "Unknown PORT ${PORT}.")
-endif ()
+include(Build${CMAKE_SYSTEM_NAME}.cmake)

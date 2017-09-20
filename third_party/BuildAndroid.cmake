@@ -4,7 +4,7 @@ ExternalProject_Add(pjsip
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/pjsip
     URL ${ARCHIVE_DIR}/${PJSIP_FILENAME}
     BUILD_IN_SOURCE 1
-    PATCH_COMMAND patch -p1 -t -N -i ${CMAKE_CURRENT_SOURCE_DIR}/android.patch
+    # PATCH_COMMAND patch -p1 -t -N -i ${CMAKE_CURRENT_SOURCE_DIR}/android.patch
     COMMAND patch -p1 -t -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pjsip.patch
     CONFIGURE_COMMAND ANDROID_NDK_ROOT=${NDK_ROOT} APP_PLATFORM=android-${NDK_LEVEL} ./configure-android
     BUILD_COMMAND make dep COMMAND make

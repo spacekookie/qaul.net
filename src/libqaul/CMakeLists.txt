@@ -79,25 +79,21 @@ else()
     )
 endif ()
 
-if (${PORT} STREQUAL "WINDOWS")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   set (LIBTYPE SHARED)
-else ()
-  set (LIBTYPE STATIC)
-endif ()
-
-if (${PORT} STREQUAL "WINDOWS")
   set (WIN_SOURCES
     win32/functions.c
     win32/pthread.c
   )
+else ()
+  set (LIBTYPE STATIC)
 endif ()
 
-if (${PORT} STREQUAL "ANDROID")
+if (ANDROID)
   set (ANDROIDA_SOURCES
     mg_backend_apk.c
   )
 endif ()
-
 
 ADD_LIBRARY (libqaul ${LIBTYPE}
     qaullib.c
@@ -195,7 +191,7 @@ if (${PORT} STREQUAL "LINUX")
     target_link_libraries(libqaul LINK_PUBLIC dl m pthread ${ALSA_LIBRARIES})
 endif ()
 
-if (${PORT} STREQUAL "WINDOWS")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     target_link_libraries(libqaul LINK_PUBLIC ws2_32 wsock32 winmm)
 endif ()
 

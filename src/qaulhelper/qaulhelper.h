@@ -54,7 +54,7 @@ int start_portforwarding (int argc, const char * argv[]);
 int stop_portforwarding (int argc, const char * argv[]);
 
 
-#ifdef QAUL_PORT_OSX
+#ifdef QAUL_PORT_DARWIN
 
 /**
  * enable wifi
@@ -66,7 +66,7 @@ int enable_wifi (int argc, const char * argv[]);
  */
 int disable_wifi (int argc, const char * argv[]);
 
-#endif // QAUL_PORT_OSX
+#endif // QAUL_PORT_DARWIN
 
 
 #ifdef QAUL_PORT_LINUX
@@ -126,7 +126,7 @@ int start_gateway (int argc, const char * argv[]);
 int stop_gateway (int argc, const char * argv[]);
 
 
-#ifdef QAUL_PORT_OSX
+#ifdef QAUL_PORT_DARWIN
 
 /**
  * create network profile
@@ -155,5 +155,5 @@ int create_ibss (int argc, const char * argv[]);
  */
 int set_dhcp (int argc, const char * argv[]);
 
-#endif // QAUL_PORT_OSX
+#endif // QAUL_PORT_DARWIN
 

@@ -4,10 +4,6 @@ project (qaul)
 
 include (CTest)
 
-# TODO remove, fix warnings. If not possible, bump version to 3.x
-# somthing newish is anyways required for cross bild..
-cmake_policy(SET CMP0054 OLD)
-
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 	if (APPLE)
 		set (CMAKE_INSTALL_PREFIX "/Library/qaul.net" CACHE PATH "qaul.net install prefix" FORCE)
@@ -40,31 +36,6 @@ set (QAUL_DESKTOPDIR "/usr/share/applications" CACHE STRING "choose install loca
 set (QAUL_ICONDIR "${CMAKE_INSTALL_PREFIX}/lib/qaul/icons" CACHE STRING "choose install location for the aplication icon file(s)")
 set (QAUL_BINDIR "NONE" CACHE STRING "if set a wrapper shell script will be installed here")
 
-# What to build
-# Determine the operating system
-set (ALL_PORTS ANDROID WINDOWS OSX IOS LINUX)
-STRING (TOUPPER "${PORT}" PORT)
-set (PORT "AUTO" CACHE STRING "choose which qaul port to build (one of ${ALL_PORTS})")
-
-if (${PORT} STREQUAL "AUTO")
-  if (UNIX)
-    if (APPLE)
-      set (PORT "OSX")
-    else ()
-      set (PORT "LINUX")
-    endif ()
-  elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set (PORT "WINDOWS")
-  else ()
-    message(FATAL_ERROR "Unknown OS '${CMAKE_SYSTEM_NAME}'")
-  endif ()
-endif ()
-
-list(FIND ALL_PORTS ${PORT} RET)
-if (${RET} EQUAL -1)
-  message(FATAL_ERROR "Please choose which qaul port to build (one of ${ALL_PORTS})")
-endif ()
-
 # determine the GUI
 set(ALL_GUIS CLI NATIVE GTK QT5)
 STRING (TOUPPER "${GUI}" GUI)
@@ -72,7 +43,7 @@ set(GUI "DEFAULT" CACHE STRING "Choose which qaul GUI to build (one of ${ALL_GUI
 
 # readjust defaults
 if (${GUI} STREQUAL "DEFAULT")
-  if ("${PORT}" STREQUAL "LINUX")
+  if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     set (GUI GTK)
   else ()
     set (GUI NATIVE)
@@ -90,7 +61,7 @@ else ()
     set (GUINAME "qaul")
 endif ()
 
-if (${PORT} STREQUAL "WINDOWS")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   set (GUINAME "${GUINAME}.exe")
 endif ()
 
@@ -114,6 +85,7 @@ set(CPACK_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION
 
 # configure a header file to pass some of the CMake settings
 # to the source code
+string(TOUPPER ${CMAKE_SYSTEM_NAME} PORT)
 configure_file (
   "${PROJECT_SOURCE_DIR}/include/QaulConfig.h.in"
   "${PROJECT_BINARY_DIR}/include/QaulConfig.h"
@@ -123,41 +95,29 @@ configure_file (
 # so that we will find QaulConfig.h
 include_directories ("${PROJECT_BINARY_DIR}/include")
 
-if (${PORT} STREQUAL "LINUX")
-    include(cmake/BuildLinux.cmake)
-elseif (${PORT} STREQUAL "ANDROID")
-    include(cmake/BuildAndroid.cmake)
-elseif (${PORT} STREQUAL "OSX")
-    include(cmake/BuildOSX.cmake)
-elseif (${PORT} STREQUAL "WINDOWS")
-    include(cmake/BuildWindows.cmake)
-else ()
-    message(FATAL_ERROR "Dont know how to build '${PORT}'")
-endif ()
+include(cmake/Build${CMAKE_SYSTEM_NAME}.cmake)
 
 add_subdirectory (third_party)
 add_subdirectory (src/olsrd-plugin)
 
-if (NOT ${PORT} STREQUAL "ANDROID")
-    add_subdirectory (src/libqaulutils)
-    add_subdirectory (src/libqaulconnector)
-    add_subdirectory (src/libqaul)
-endif ()
+add_subdirectory (src/libqaulutils)
+add_subdirectory (src/libqaulconnector)
+add_subdirectory (src/libqaul)
 
 # on linux always build the cli client
-if (${PORT} STREQUAL "LINUX" AND NOT ${GUI} STREQUAL "CLI")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" AND NOT ${GUI} STREQUAL "CLI")
     add_subdirectory (src/client/cli)
 endif ()
 
 if (${GUI} STREQUAL "NATIVE")
-    if (${PORT} STREQUAL "OSX")
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 	add_subdirectory (src/client/osx)
-    elseif (${PORT} STREQUAL "WINDOWS")
+    elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	# add_subdirectory (src/client/win)
-    elseif (${PORT} STREQUAL "ANDROID")
+    elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
 	# have its own
     else ()
-	message(FATAL_ERROR "Dont know how to build UI '${GUI}' on port '${PORT}'")
+	message(FATAL_ERROR "Dont know how to build UI '${GUI}' on  '${CMAKE_SYSTEM_NAME}'")
     endif ()
 elseif (${GUI} STREQUAL "CLI")
     add_subdirectory (src/client/cli)
@@ -169,7 +129,7 @@ else ()
     message(FATAL_ERROR "Dont know how to build ui '${GUI}'")
 endif ()
 
-if (${PORT} STREQUAL "LINUX")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "LINUX")
   option (LINUXDAEMON "Use Linux daemon" ON)
 else ()
   option (LINUXDAEMON "Use Linux daemon" OFF)
@@ -190,7 +150,7 @@ add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/c
 # final status summary report
 message(STATUS "#############################################")
 message(STATUS "  qaul seems to be successfully configured.")
-message(STATUS "    Building for platform: ${PORT}")
+message(STATUS "    Building for platform: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "    Building GUI: ${GUI}")
 message(STATUS "    Arm/Raspberry patches enabled: ${Raspberry}")
 message(STATUS "    Qaul executable: ${GUINAME}")
@@ -204,23 +164,23 @@ if (BUILD_TESTING)
     message(STATUS "To run the tests type")
     message(STATUS "        ctest --output-on-failure")
 endif()
-if (${PORT} STREQUAL "LINUX")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     message(STATUS "To install the project type the command")
     message(STATUS "        sudo make install")
     message(STATUS "To uninstall the project type the command")
     message(STATUS "        sudo make uninstall")
-elseif (${PORT} STREQUAL "ANDROID")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
     message(STATUS "To install your app from the command line")
     message(STATUS "Make sure your phone is connected and debugging mode is activated")
     message(STATUS "       adb install android/app/src/main/bin/QaulActivity-debug.apk")
-elseif (${PORT} STREQUAL "OSX")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     message(STATUS "Generate a DMG installer image")
     message(STATUS "        ./make_dmg.sh")
     message(STATUS "To install qaul.net build on your local system type")
     message(STATUS "        sudo make install")
     message(STATUS "To uninstall qaul.net build from your local system type")
     message(STATUS "        sudo make uninstall")
-elseif (${PORT} STREQUAL "WINDOWS")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     message(STATUS "To build Visual Studio project files")
     message(STATUS "        mkdir src/client/win/build")
     message(STATUS "        cd build")

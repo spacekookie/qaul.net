@@ -1,8 +1,8 @@
 
-if (${PORT} STREQUAL "LINUX")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	set(QAULHELPER_DISTROFILE linux.c)
 	set(QAULHELPER_DESTINATION lib/qaul/bin)
-elseif (${PORT} STREQUAL "OSX")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 	set(QAULHELPER_DISTROFILE osx.c)
 	set(QAULHELPER_DESTINATION bin)
 else ()

@@ -1,5 +1,5 @@
 
-if (${PORT} STREQUAL "LINUX")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   find_package(ALSA REQUIRED)
 endif ()
 
@@ -41,7 +41,7 @@ target_link_libraries(qaul-qt5 ${DBUS1_LIBRARIES}
     pthread dl m
 )
 
-if (${PORT} STREQUAL "LINUX")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     target_link_libraries(qaul-qt5 ${ALSA_LIBRARIES})
 endif ()
 
