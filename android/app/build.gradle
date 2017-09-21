@@ -6,38 +6,16 @@ android {
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        applicationId "net.qaul.qaul"
         minSdkVersion 9
         targetSdkVersion 17
 
         project.ext.set("archivesBaseName", "qaul")
-
-        ndk {
-            moduleName "wificonfig"
-            abiFilters "armeabi"
-        }
-        externalNativeBuild {
-            ndkBuild {
-                arguments "PJSIP_PATH=${CMAKE_BINARY_DIR}/third_party/pjsip/src/pjsip",
-                          "EXTRALIB_PATH=${EXTRALIB_PATH}",
-                          "LIBQAUL_SRC=${CMAKE_SOURCE_DIR}/src/libqaul",
-                          "LIBQAULUTILS_SRC=${CMAKE_SOURCE_DIR}/src/libqaulutils/src",
-                          "LIBQAULUTILS_INCLUDE=${CMAKE_SOURCE_DIR}/src/libqaulutils/include",
-                          "QAULCONFIG_INCLUDE=${CMAKE_BINARY_DIR}/include",
-                          "MONGOOSE_PATH=${CMAKE_SOURCE_DIR}/third_party/mongoose"
-            }
-        }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-    }
     externalNativeBuild {
-        ndkBuild {
-            path 'src/main/jni/Android.mk'
+        cmake {
+            //path "../../CMakeLists.txt"
+            path "CMakeLists.txt"
         }
     }
 
@@ -45,4 +23,80 @@ android {
         abortOnError false
     }
 
+    buildTypes {
+        debug {
+            minifyEnabled true
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    productFlavors {
+        // the original qaul variant
+        legacy {
+            applicationId "net.qaul.qaul"
+            ndk {
+                abiFilters 'armeabi'
+            }
+            externalNativeBuild {
+                cmake {
+                    cppFlags ""
+                    //targets "nativetask", "hardware_legacy", "wificonfig", "tether", "reallibqaul"
+                    //arguments "-DANDROID_REWRITE_HACK_LIBONLY=OFF", "-DEXTRALIB_PATH=${EXTRALIB_PATH}", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_ARM_MODE=arm"
+                    targets "reallibqaul"
+                    arguments "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                }
+            }
+        }
+
+        // native android ui
+        // 'native' is kinda keyword, so use olivenoel instead :)
+        olivenoel {
+            applicationId "net.qaul.native"
+            externalNativeBuild {
+                cmake {
+                    cppFlags ""
+                    targets "reallibqaul"
+                    arguments "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                }
+            }
+        }
+
+        // no root required
+        noroot {
+            applicationId "net.qaul.noroot"
+            ndk {
+                //abiFilters 'armeabi'
+                abiFilters 'x86'
+            }
+            externalNativeBuild {
+                cmake {
+                    cppFlags ""
+                    targets "reallibqaul"
+                    arguments "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                }
+            }
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFile = new File(
+                    output.outputFile.parent,
+                    output.outputFile.name.replace(".apk", "-${variant.versionName}.apk"))
+        }
+    }
+
+    sourceSets {
+        main {
+        }
+        legacy {
+        }
+        olivenoel {
+        }
+        noroot {
+        }
+    }
 }
