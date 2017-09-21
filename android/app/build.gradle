@@ -10,7 +10,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 17
 
-        project.ext.set("archivesBaseName", "qaul");
+        project.ext.set("archivesBaseName", "qaul")
 
         ndk {
             moduleName "wificonfig"
