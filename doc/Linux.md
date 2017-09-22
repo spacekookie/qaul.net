@@ -43,17 +43,21 @@ Download and Build
 
 ##### CMAKE Failure
 
-cmake needs to be of a version 3.1 or higher to be able to run 
-sucessfully. 
+cmake needs to be of a version 3.2 or higher to be able to run
+sucessfully.
 
-###### Debian Wheezy and Debian Jessie
-On debian wheezy and debian jessie one needs to install cmake from 
-wheezy-backports.
+###### Debian Wheezy
+Its called 'oldoldstable' for a reason. ;)
 
-Add the following line to the file /etc/apt/sources.list to be able to 
-use the wheezy-backports repository 
+You may need to install a decent cmake version (3.2 or newer) yourself.
 
-	deb http://ftp.de.debian.org/debian/ wheezy-backports main non-free
+###### Debian Jessie
+On debian jessie you need to install cmake from jessie-backports.
+
+Add the following line to the file /etc/apt/sources.list to be able to
+use the jessie-backports repository:
+
+	deb http://ftp.de.debian.org/debian/ jessie-backports main non-free
 
 
 Install the cmake version from backports
@@ -61,17 +65,13 @@ Install the cmake version from backports
     # update the package list
     sudo apt-get update
     # install cmake from wheezy-backports
-    sudo apt-get -t wheezy-backports install cmake
+    sudo apt-get -t jessie-backports install cmake
 
-###### Ubuntu Trusty
+###### Ubuntu Trusty (14.04)
 
-Install cmake from ppa
+Install cmake3
 
-	# add ppa
-	sudo add-apt-repository ppa:george-edison55/cmake-3.x
-	# install newer CMAKE
-	sudo apt-get update
-	sudo apt-get install cmake
+	sudo apt install cmake3
 
 
 ##### Debian Wheezy
