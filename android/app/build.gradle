@@ -46,7 +46,7 @@ android {
                     //targets "nativetask", "hardware_legacy", "wificonfig", "tether", "reallibqaul"
                     //arguments "-DANDROID_REWRITE_HACK_LIBONLY=OFF", "-DEXTRALIB_PATH=${EXTRALIB_PATH}", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_ARM_MODE=arm"
                     targets "reallibqaul"
-                    arguments "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                    arguments "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
         }
@@ -59,7 +59,7 @@ android {
                 cmake {
                     cppFlags ""
                     targets "reallibqaul"
-                    arguments "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                    arguments "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
         }
@@ -75,7 +75,7 @@ android {
                 cmake {
                     cppFlags ""
                     targets "reallibqaul"
-                    arguments "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                    arguments "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
         }
