@@ -26,31 +26,11 @@ add_library(nativetask SHARED
 
 endif(NOT ANDROID_REWRITE_HACK_LIBONLY)
 
-# TODO remove, fix warnings. If not possible, bump version to 3.x
-# somthing newish is anyways required for cross bild..
-cmake_policy(SET CMP0054 OLD)
-
-# add_subdirectory(../../../../../src/libqaulutils qaul/libqaulutils)
-# add_subdirectory(../../../../../src/libqaulconnector qaul/libqaulconnector)
-# add_subdirectory(../../../../../third_party qaul/third_party)
-# add_subdirectory(../../../../../src/libqaul qaul/libqaul)
-
 add_subdirectory(../../src/libqaulutils qaul/libqaulutils)
 add_subdirectory(../../src/libqaulconnector qaul/libqaulconnector)
 add_subdirectory(../../third_party qaul/third_party)
 add_subdirectory(../../src/libqaul qaul/libqaul)
 
-# add_subdirectory(src/libqaulutils ${CMAKE_BINARY_DIR}/xxsrc/xxlibqaulutils)
-# add_subdirectory(src/libqaulconnector ${CMAKE_BINARY_DIR}/xxsrc/xxlibqaulconnector)
-# add_subdirectory(third_party ${CMAKE_BINARY_DIR}/xxthird_party)
-# add_subdirectory(src/libqaul ${CMAKE_BINARY_DIR}/xxsrc/xxlibqaul)
-
-# add_subdirectory(../../src/libqaulutils)
-# add_subdirectory(src/libqaulconnector)
-# add_subdirectory(third_party)
-# add_subdirectory(src/libqaul)
-
-# set(JNI_SRC ${CMAKE_SOURCE_DIR}/android/app/src/main/jni)
 set(JNI_SRC ${CMAKE_SOURCE_DIR}/src/main/jni)
 
 add_library(reallibqaul SHARED ${JNI_SRC}/net_qaul_qaul_NativeQaul.c)
@@ -58,14 +38,15 @@ target_link_libraries(reallibqaul
                       libqaul
                       android
                       log)
-# target_include_directories(libcuckoo-static PUBLIC "include")
 set_target_properties(reallibqaul PROPERTIES OUTPUT_NAME "qaul")
 
-
-message(STATUS "========== VARIABLES ==========")
-#get_cmake_property(vs VARIABLES)
-#foreach(v ${vs})
-#  message(STATUS "${v}='${${v}}'")
-#endforeach()
-message(STATUS "========== VARIABLES ==========")
-message(STATUS "HACK_MBEDTLS_INSTALL_DIR ${HACK_MBEDTLS_INSTALL_DIR}")
+# be verbose what we are building for
+message(STATUS "#############################################")
+message(STATUS "  Building for platform: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "  CMAKE_ANDROID_ARCH_ABI=${CMAKE_ANDROID_ARCH_ABI}")
+message(STATUS "  CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
+message(STATUS "  ANDROID_TOOLCHAIN=${ANDROID_TOOLCHAIN}")
+message(STATUS "  ANDROID_ABI=${ANDROID_ABI}")
+message(STATUS "  ANDROID_ARM_MODE=${ANDROID_ARM_MODE}")
+message(STATUS "  Default loglevel: ${QAUL_DEFAULT_LOGLEVEL}")
+message(STATUS "#############################################")

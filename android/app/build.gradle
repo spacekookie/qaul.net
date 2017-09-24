@@ -67,10 +67,6 @@ android {
         // no root required
         noroot {
             applicationId "net.qaul.noroot"
-            ndk {
-                //abiFilters 'armeabi'
-                abiFilters 'x86'
-            }
             externalNativeBuild {
                 cmake {
                     cppFlags ""
