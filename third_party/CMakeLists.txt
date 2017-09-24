@@ -20,6 +20,13 @@ set(MbedTlsCMakeArgs
 	-DENABLE_PROGRAMS=OFF
 )
 
+if (ANDROID)
+set(MbedTlsCMakeArgs
+	${MbedTlsCMakeArgs}
+	-DENABLE_TESTING=OFF
+)
+endif ()
+
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 set(MbedTlsCMakeArgs
 	${MbedTlsCMakeArgs}
