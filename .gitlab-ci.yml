@@ -92,38 +92,117 @@ Nightly Copy Windows:
 # Test Builds
 ###################################################
 
-Linux 64-bit:
-  stage: build
-  script:
-    - mkdir build; cd build; cmake ..; make package VERBOSE=1
-  except:
-    - master
-    - qaul-ng
-  tags:
-    - linux_64
+##### linuxe
 
-Linux 32-bit:
+.tb_base: &tb_def
   stage: build
-  script:
-    - mkdir build; cd build; cmake ..; make package VERBOSE=1
+  cache:
+    paths:
+        - archives/
   except:
     - master
     - qaul-ng
-  tags:
-    - linux_32
 
-Raspberry:
-  stage: build
+.tb_linuxcli: &baselinuxcli
+  <<: *tb_def
   script:
-    - mkdir build; cd build; cmake .. -DRaspberry=1; make package VERBOSE=1
-  except:
-    - master
-    - qaul-ng
+    - mkdir build; cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=DEBUG -DGUI=CLI -DVOIP=OFF
+    - make package
+    - make test
+
+.tb_linux: &baselinux
+  <<: *tb_def
+  script:
+    - mkdir build; cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=DEBUG
+    - make package
+    - make test
+
+Ubuntu1604_64_CLI:
+  <<: *baselinuxcli
   tags:
-    - raspian
+    - ubuntu1604_64
+
+Ubuntu1604_32_CLI:
+  <<: *baselinuxcli
+  tags:
+    - ubuntu1604_32
+
+Ubuntu1604_64:
+  <<: *baselinux
+  tags:
+    - ubuntu1604_64
+
+Ubuntu1604_32:
+  <<: *baselinux
+  tags:
+    - ubuntu1604_32
+
+RaspianStretch_CLI:
+  <<: *baselinuxcli
+  tags:
+    - raspian-stretch
+
+RaspianStretch:
+  <<: *baselinux
+  tags:
+    - raspian-stretch
+
+Ubuntu1604_64_Release:
+  <<: *tb_def
+  script:
+    - mkdir build; cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=RELEASE
+    - make package
+    - make test
+  tags:
+    - ubuntu1604_64
+
+##### droiden
+
+.tb_android: &androidbase
+  <<: *tb_def
+  tags:
+    - android
+
+Android_legacy:
+  <<: *androidbase
+  script:
+    - cd android
+    - echo "ndk.dir=${ANDROID_NDK}" > local.properties
+    - echo "sdk.dir=${ANDROID_SDK}" >> local.properties
+    - ./gradlew --continue assembleLegacyDebug
+
+Android_nativeui:
+  <<: *androidbase
+  script:
+    - cd android
+    - echo "ndk.dir=${ANDROID_NDK}" > local.properties
+    - echo "sdk.dir=${ANDROID_SDK}" >> local.properties
+    - ./gradlew --continue assembleOlivenoelDebug
+
+Android_noroot:
+  <<: *androidbase
+  script:
+    - cd android
+    - echo "ndk.dir=${ANDROID_NDK}" > local.properties
+    - echo "sdk.dir=${ANDROID_SDK}" >> local.properties
+    - ./gradlew --continue assembleNorootDebug
+
+Android_noroot_Release:
+  <<: *androidbase
+  script:
+    - cd android
+    - echo "ndk.dir=${ANDROID_NDK}" > local.properties
+    - echo "sdk.dir=${ANDROID_SDK}" >> local.properties
+    - ./gradlew --continue assembleNorootRelease
 
 OSX:
   stage: build
+  cache:
+    paths:
+        - archives/
   script:
     - mkdir build; cd build; cmake ..; make VERBOSE=1
     - ./make_dmg.sh
@@ -133,20 +212,11 @@ OSX:
   tags:
     - osx
 
-Android:
-  stage: build
-  script:
-    - mkdir build; cd build
-    - cmake ../ -DPORT=ANDROID -DSDK_ROOT=$ANDROID_SDK -DNDK_ROOT=$ANDROID_NDK -DEXTRALIB_PATH=$ANDROID_LIBRARIES -DANDROID_EABI=$ANDROID_EABI
-    - make VERBOSE=1
-  except:
-    - master
-    - qaul-ng
-  tags:
-    - android
-
 Windows:
   stage: build
+  cache:
+    paths:
+        - archives/
   script:
     - PATH="/mingw32/bin:$PATH"; declare -x MSYSTEM="MINGW32"; declare -x MSYSCON="mintty.exe"
     - mkdir build; cd build; cmake .. -G "MSYS Makefiles" -DGUI=NATIVE; make VERBOSE=1
