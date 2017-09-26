@@ -38,12 +38,12 @@ Supports a lot of transports (adhoc/olsr, bluetoof, WifiDirect, LAN, Tor, I2P, .
 This version of qaul does not require root access, also comes without any code for it.
  * no captive portal/access point
  * no adhoc/olsr network
- * blootoof/WifiDirect depends on your android version
+ * blootoof/WifiDirect depends on your android version and settings
  * LAN should allways work if you are connected to such a network
  * Tor/I2P, requires internet connection
 
 ### variants
-each flavor comes in tree variants
+each flavor comes in three variants
 
  * release
     some logging (error, warn)
@@ -108,7 +108,7 @@ For the lagacy build additional files from the target device are required:
 
 ## Build
 
-Legacy: ./gradlew assembleLecacyDebug
+Legacy: ./gradlew assembleLegacyDebug
 
 
 noroot: ./gradlew assempleNorootDebug
