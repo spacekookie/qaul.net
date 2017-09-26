@@ -34,6 +34,10 @@ add_subdirectory(../../src/libqaul qaul/libqaul)
 set(JNI_SRC ${CMAKE_SOURCE_DIR}/src/main/jni)
 
 add_library(reallibqaul SHARED ${JNI_SRC}/net_qaul_qaul_NativeQaul.c)
+
+# find generated jni headers
+target_include_directories(reallibqaul PRIVATE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/../include)
+
 target_link_libraries(reallibqaul
                       libqaul
                       android

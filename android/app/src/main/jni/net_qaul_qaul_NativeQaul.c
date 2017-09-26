@@ -3,7 +3,7 @@
  * licensed under GPL (version 3)
  */
 
-#include "net_qaul_qaul_NativeQaul.h"
+#include "qaul/jni/native.h"
 #include "qaullib.h"
 #include "qaullib_threads.h"
 #include <android/log.h>
