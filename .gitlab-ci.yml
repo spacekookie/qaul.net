@@ -96,6 +96,8 @@ Nightly Copy Windows:
 
 .tb_base: &tb_def
   stage: build
+  when: manual
+  allow_failure: false
   cache:
     paths:
         - archives/
@@ -200,6 +202,7 @@ Android_noroot_Release:
 
 OSX:
   stage: build
+  when: manual
   cache:
     paths:
         - archives/
@@ -214,6 +217,7 @@ OSX:
 
 Windows:
   stage: build
+  when: manual
   cache:
     paths:
         - archives/
