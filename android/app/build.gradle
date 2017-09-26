@@ -52,8 +52,7 @@ android {
         }
 
         // native android ui
-        // 'native' is kinda keyword, so use olivenoel instead :)
-        olivenoel {
+        nativeui {
             applicationId "net.qaul.native"
             externalNativeBuild {
                 cmake {

@@ -26,8 +26,8 @@ Web user interface frontend.
   (due to before unsupported pthread functions in pjsip).
 * The Android device needs to be rooted.
 
-#### olivenoel
-This is a native ui version of qaul. 'native' is kinda keyword in a lot of places, so use 'olivenoel' as working title for now. ;)
+#### nativeui
+This is a native ui version of qaul.
 
 Supports a lot of transports (adhoc/olsr, bluetoof, WifiDirect, LAN, Tor, I2P, ... send patches!!1!)
 
