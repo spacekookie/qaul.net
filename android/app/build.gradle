@@ -85,17 +85,6 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-        }
-        legacy {
-        }
-        olivenoel {
-        }
-        noroot {
-        }
-    }
-
     applicationVariants.all { variant ->
         def vname = "${variant.name.capitalize()}"
         def enbTask = project.tasks.getByName("externalNativeBuild${vname}")
