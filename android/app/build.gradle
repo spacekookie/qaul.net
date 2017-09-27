@@ -1,6 +1,4 @@
 apply plugin: 'com.android.application'
-
-
 android {
     compileSdkVersion 17
     buildToolsVersion "25.0.0"
@@ -14,7 +12,6 @@ android {
 
     externalNativeBuild {
         cmake {
-            //path "../../CMakeLists.txt"
             path "CMakeLists.txt"
         }
     }
@@ -50,10 +47,9 @@ android {
                 }
             }
         }
-
         // native android ui
         nativeui {
-            applicationId "net.qaul.native"
+            applicationId 'net.qaul.nativeui'
             externalNativeBuild {
                 cmake {
                     cppFlags ""
@@ -62,7 +58,6 @@ android {
                 }
             }
         }
-
         // no root required
         noroot {
             applicationId "net.qaul.noroot"
@@ -88,7 +83,7 @@ android {
         def vname = "${variant.name.capitalize()}"
         def enbTask = project.tasks.getByName("externalNativeBuild${vname}")
 
-        task ("generate${vname}JavaH") {
+        task("generate${vname}JavaH") {
             def outputFile = file("${enbTask.getObjFolder()}/include/qaul/jni/native.h")
             outputs.file outputFile
 
@@ -105,4 +100,7 @@ android {
         }
         enbTask.dependsOn "generate${vname}JavaH"
     }
+}
+
+dependencies {
 }
