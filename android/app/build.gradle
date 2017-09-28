@@ -43,7 +43,7 @@ android {
                     //targets "nativetask", "hardware_legacy", "wificonfig", "tether", "reallibqaul"
                     //arguments "-DANDROID_REWRITE_HACK_LIBONLY=OFF", "-DEXTRALIB_PATH=${EXTRALIB_PATH}", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_ARM_MODE=arm"
                     targets "reallibqaul"
-                    arguments "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                    arguments "-DQFLAVOR_NAME=legacy", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
         }
@@ -54,7 +54,7 @@ android {
                 cmake {
                     cppFlags ""
                     targets "reallibqaul"
-                    arguments "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                    arguments "-DQFLAVOR_NAME=nativeui", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
         }
@@ -65,7 +65,7 @@ android {
                 cmake {
                     cppFlags ""
                     targets "reallibqaul"
-                    arguments "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                    arguments "-DQFLAVOR_NAME=noroot", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
         }
@@ -94,7 +94,7 @@ android {
                     executable org.gradle.internal.jvm.Jvm.current().getExecutable('javah')
                     args "-o", outputFile
                     args "-classpath", "${project.tasks.getByName("compile${vname}JavaWithJavac").destinationDir}:${android.getBootClasspath()[0]}"
-                    args "net.qaul.qaul.NativeQaul"
+                    args "net.qaul.qaul.NativeQaul", "net.qaul.nativelib.LibQaulUtils", "net.qaul.nativelib.LibQaulConnector", "net.qaul.nativelib.CommonLibQaul", "net.qaul.nativelib.LibQaul"
                 }
             }
         }

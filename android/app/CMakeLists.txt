@@ -26,14 +26,55 @@ add_library(nativetask SHARED
 
 endif(NOT ANDROID_REWRITE_HACK_LIBONLY)
 
+
+# build all the .a's
 add_subdirectory(../../src/libqaulutils qaul/libqaulutils)
 add_subdirectory(../../src/libqaulconnector qaul/libqaulconnector)
 add_subdirectory(../../third_party qaul/third_party)
 add_subdirectory(../../src/libqaul qaul/libqaul)
 
-set(JNI_SRC ${CMAKE_SOURCE_DIR}/src/main/jni)
+# the magic part: libqaul.so
 
-add_library(reallibqaul SHARED ${JNI_SRC}/net_qaul_qaul_NativeQaul.c)
+# old api
+set(JNI_SOURCE_DIR_LEGACY ${CMAKE_SOURCE_DIR}/src/main/jni)
+
+
+# new api
+
+set(JNI_BASE_DIR ${CMAKE_SOURCE_DIR}/src)
+
+set(JNI_SOURCE_FILES "")
+
+#macro voodoo for composing .so per flavor
+macro(add_auto_src file_name)
+  if(EXISTS ${JNI_BASE_DIR}/${QFLAVOR_NAME}/jni/${file_name})
+    set(JNI_SOURCE_FILES
+         ${JNI_SOURCE_FILES}
+         ${JNI_BASE_DIR}/${QFLAVOR_NAME}/jni/${file_name})
+    message(STATUS "#!## flavor")
+  else()
+  endif()
+endmacro(add_auto_src)
+
+macro(add_flavor_src flavor_name file_name)
+  if(${flavor_name} STREQUAL ${QFLAVOR_NAME})
+    add_auto_src(${file_name})
+  endif()
+endmacro(add_flavor_src)
+
+macro(add_main_src file_name)
+    set(JNI_SOURCE_FILES
+        ${JNI_SOURCE_FILES}
+        ${JNI_BASE_DIR}/main/jni/${file_name})
+endmacro(add_main_src)
+
+#add_main_src(test.c)
+#add_auto_src(test.c)
+#add_flavor_src(noroot test.c)
+
+add_library(reallibqaul SHARED
+               ${JNI_SOURCE_DIR_LEGACY}/net_qaul_qaul_NativeQaul.c
+               ${JNI_SOURCE_FILES})
 
 # find generated jni headers
 target_include_directories(reallibqaul PRIVATE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/../include)
