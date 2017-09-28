@@ -137,15 +137,15 @@ extern const char *const LOG_LEVEL_NAMES[];
 #define Ql_clean_errno() (errno == 0 ? "None" : strerror(errno))
 
 #define Ql_logline(L, E, M, ...) { \
-	char date[20]; \
-	struct timeval tv; \
-	gettimeofday(&tv, NULL); \
-	strftime(date, sizeof(date) / sizeof(*date), "%Y-%m-%dT%H:%M:%S", gmtime(&tv.tv_sec)); \
-	if ( E ) { \
-		fprintf(stderr, "%s.%03dZ [%s] (%s:%d: errno: %s) " M "\n", &date[0], (tv.tv_usec/1000), Ql_levelname( L ), __FILE__, __LINE__, Ql_clean_errno(), ##__VA_ARGS__); \
-	} else { \
-		fprintf(stderr, "%s.%03dZ [%s] (%s:%d) " M "\n", &date[0], (tv.tv_usec/1000), Ql_levelname( L ), __FILE__, __LINE__, ##__VA_ARGS__); \
-	} \
+    char date[20]; \
+    struct timeval tv; \
+    gettimeofday(&tv, NULL); \
+    strftime(date, sizeof(date) / sizeof(*date), "%Y-%m-%dT%H:%M:%S", gmtime(&tv.tv_sec)); \
+    if ( E ) { \
+        fprintf(stderr, "%s.%03ldZ [%s] (%s:%d: errno: %s) " M "\n", &date[0], (tv.tv_usec/1000), Ql_levelname( L ), __FILE__, __LINE__, Ql_clean_errno(), ##__VA_ARGS__); \
+    } else { \
+        fprintf(stderr, "%s.%03ldZ [%s] (%s:%d) " M "\n", &date[0], (tv.tv_usec/1000), Ql_levelname( L ), __FILE__, __LINE__, ##__VA_ARGS__); \
+    } \
 } \
 
 #define Ql_check(A, M, ...) if(!(A)) { Ql_log_error(M, ##__VA_ARGS__); errno=0; goto Ql_error; }
