@@ -182,7 +182,7 @@ Android_nativeui:
     - cd android
     - echo "ndk.dir=${ANDROID_NDK}" > local.properties
     - echo "sdk.dir=${ANDROID_SDK}" >> local.properties
-    - ./gradlew --continue assembleOlivenoelDebug
+    - ./gradlew --continue assembleNativeuiDebug
 
 Android_noroot:
   <<: *androidbase
