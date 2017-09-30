@@ -30,6 +30,8 @@ android {
         }
     }
 
+    flavorDimensions "qaul"
+
     productFlavors {
         // the original qaul variant
         legacy {
@@ -46,6 +48,7 @@ android {
                     arguments "-DQFLAVOR_NAME=legacy", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
+            dimension "qaul"
         }
         // native android ui
         nativeui {
@@ -57,6 +60,7 @@ android {
                     arguments "-DQFLAVOR_NAME=nativeui", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
+            dimension "qaul"
         }
         // no root required
         noroot {
@@ -68,6 +72,7 @@ android {
                     arguments "-DQFLAVOR_NAME=noroot", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
                 }
             }
+            dimension "qaul"
         }
     }
 
