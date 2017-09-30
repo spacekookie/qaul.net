@@ -108,9 +108,8 @@ For the lagacy build additional files from the target device are required:
 
 ## Build
 
+        ./gradlew clean
 Legacy: ./gradlew assembleLegacyDebug
-
-
 noroot: ./gradlew assempleNorootDebug
 
 You will find the newly built apk in `android/app/build/outputs/apk`.
