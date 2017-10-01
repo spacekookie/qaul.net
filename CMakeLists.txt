@@ -111,13 +111,13 @@ endif ()
 
 if (${GUI} STREQUAL "NATIVE")
     if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-	add_subdirectory (src/client/osx)
+    add_subdirectory (src/client/osx)
     elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-	# add_subdirectory (src/client/win)
+    # add_subdirectory (src/client/win)
     elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
-	# have its own
+    # have its own
     else ()
-	message(FATAL_ERROR "Dont know how to build UI '${GUI}' on  '${CMAKE_SYSTEM_NAME}'")
+    message(FATAL_ERROR "Dont know how to build UI '${GUI}' on  '${CMAKE_SYSTEM_NAME}'")
     endif ()
 elseif (${GUI} STREQUAL "CLI")
     add_subdirectory (src/client/cli)
