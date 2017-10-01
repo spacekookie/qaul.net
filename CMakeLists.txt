@@ -23,14 +23,6 @@ set (QAUL_VERSION "${QAUL_VERSION_MAJOR}.${QAUL_VERSION_MINOR}.${QAUL_VERSION_PA
 set (QAUL_ANDROID_VERSION_CODE "1" CACHE STRING "Android versions code (build number)")
 set (QAUL_ANDROID_VERSION_NAME "${QAUL_VERSION}" CACHE STRING "Android versions name (displayed version string")
 
-# build configuration
-set (LOGLEVELS LOG_NONE LOG_ERROR LOG_WARN LOG_INFO LOG_DEBUG)
-set (QAUL_DEFAULT_LOGLEVEL "LOG_DEBUG" CACHE STRING "set the default log level (one of ${LOGLEVELS})")
-list (FIND LOGLEVELS ${QAUL_DEFAULT_LOGLEVEL} RET)
-if (${RET} EQUAL -1)
-	message(FATAL_ERROR "Please choose which log level to include (one of ${LOGLEVELS})")
-endif ()
-
 # install configuration
 set (QAUL_DESKTOPDIR "/usr/share/applications" CACHE STRING "choose install location for the .desktop file")
 set (QAUL_ICONDIR "${CMAKE_INSTALL_PREFIX}/lib/qaul/icons" CACHE STRING "choose install location for the aplication icon file(s)")
@@ -154,9 +146,6 @@ message(STATUS "    Building for platform: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "    Building GUI: ${GUI}")
 message(STATUS "    Arm/Raspberry patches enabled: ${Raspberry}")
 message(STATUS "    Qaul executable: ${GUINAME}")
-message(STATUS "    Default loglevel: ${QAUL_DEFAULT_LOGLEVEL}")
-message(STATUS "#############################################")
-
 message(STATUS "*****************************************************************")
 message(STATUS "To build the project execute the command")
 message(STATUS "        make")

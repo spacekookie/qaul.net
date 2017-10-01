@@ -7,6 +7,8 @@
 
 #include "qaul/utils/logging.h"
 
+#ifdef QAULLOG_LOGGING_ENABLED
+
 loglevel_t getLogLevel(void) {
     return loglevel;
 }
@@ -18,3 +20,5 @@ loglevel_t setLogLevel(loglevel_t newloglevel) {
     loglevel = newloglevel;
     return oldLogLevel;
 }
+
+#endif // QAULLOG_LOGGING_ENABLED

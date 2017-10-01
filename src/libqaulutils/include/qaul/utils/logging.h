@@ -21,12 +21,10 @@
  * -DQAUL_LOG_DEFAULTLEVEL=LOGLEVEL (Set log level to one of the available log levels. Default log level is DEBUG.)
  */
 
-#ifndef _LOGGING_H
-#define _LOGGING_H
+#ifndef __QAULLIB_UTILS_LOGGING_H
+#define __QAULLIB_UTILS_LOGGING_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
+#include "qaul/utils/config.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -159,9 +157,4 @@ extern const char *const LOG_LEVEL_NAMES[];
 loglevel_t getLogLevel(void);
 loglevel_t setLogLevel(loglevel_t newloglevel);
 
-
-#ifdef __cplusplus
-}
-#endif // __cplusplus
-
-#endif // _LOGGING_H
+#endif // __QAULLIB_UTILS__LOGGING_H

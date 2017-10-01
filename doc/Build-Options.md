@@ -12,16 +12,6 @@ General options:
   * Sets graphics user interface framework. By default cmake tries to
     automatically figure out what toolkit to use.
   * The following options exist: NATIVE, CLI, GTK
-* -DQAUL_LOG_DEFAULTLEVEL=LOGLEVEL
-  * Sets the default log level.
-  * The following log levels exist:
-    NONE, ERROR, WARN, INFO, DEBUG
-  * This option is optional. The default log level is DEBUG.
-* -DQAUL_LOG_ENABLE=YES
-  * When this option is set to NO, it does not compile any logging capability into the
-    qaullib binary. This is useful when compiling for embedded systems
-    with limited memory.
-  * This option is optional. Default value is YES.
 * -DCOMPILE_MINIMAL=NO
   * Whe set to YES, this option excludes all unnecessary strings etc. from the
     binaries. This is useful when compiling for embedded systems with limited
@@ -32,6 +22,28 @@ General options:
     into qaullib. This is useful, when building qaullib for servers, where voice
     over IP is not necessary.
   * Default value is YES.
+
+Logging options:
+
+* -DQAULLOG_LOGGING_ENABLED=ON|OFF
+  * When this option is set to OFF, it does not compile any logging capability into the
+    qaullib binary. This is useful when compiling for embedded systems
+    with limited memory.
+  * This option is optional. Default value is ON.
+
+* -DQAULLOG_DEFAULT_LOGLEVEL=NONE|ERROR|WARN|INFO|DEBUG
+  * Sets the default log level.
+  * The following log levels exist:
+    NONE, ERROR, WARN, INFO, DEBUG
+  * This option is optional.
+  * Default log level:
+    * debug build: DEBUG
+    * release build: WARN
+* -DQAULLOG_MAX_LOGLEVEL=ERROR|WARN|INFO|DEBUG
+  * do not include code for log level above QAULLOG_MAX_LOGLEVEL
+  * Defaults:
+    * debug build: DEBUG
+    * release build: INFO
 
 Android options:
 

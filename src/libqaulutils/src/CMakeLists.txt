@@ -7,7 +7,8 @@ ADD_LIBRARY (libqaulutils STATIC
 # since the name starts with 'lib' don't add it again
 set_target_properties (libqaulutils PROPERTIES PREFIX "")
 
-target_include_directories (libqaulutils PUBLIC ../include)
+target_include_directories (libqaulutils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+target_include_directories (libqaulutils PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/../include)
 
 #if (${PORT} STREQUAL "LINUX")
 #    target_link_libraries(libqaul LINK_PUBLIC dl m pthread ${ALSA_LIBRARIES})
