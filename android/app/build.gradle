@@ -77,6 +77,19 @@ android {
             }
             dimension "qaul"
         }
+        // Minimal build: everything possible turned off
+        // Its a reference build, its not meant to leave an useful App.
+        minimal {
+            applicationId "net.qaul.minimal"
+            externalNativeBuild {
+                cmake {
+                    cppFlags ""
+                    targets "reallibqaul"
+                    arguments "-DQFLAVOR_NAME=minimal", "-DQAULLOG_LOGGING_ENABLED=OFF", "-DANDROID_TOOLCHAIN=gcc", "-DANDROID_REWRITE_HACK_LIBONLY=ON"
+                }
+            }
+            dimension "qaul"
+        }
     }
 
     applicationVariants.all { variant ->
