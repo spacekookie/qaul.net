@@ -121,6 +121,15 @@ Nightly Copy Windows:
     - make package
     - make test
 
+.tb_linuxminimal: &baselinuxminimal
+  <<: *tb_def
+  script:
+    - mkdir build; cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=DEBUG -DQAULLOG_LOGGING_ENABLED=OFF
+    - make package
+    - make test
+
+
 Ubuntu1604_64_CLI:
   <<: *baselinuxcli
   tags:
@@ -140,6 +149,11 @@ Ubuntu1604_32:
   <<: *baselinux
   tags:
     - ubuntu1604_32
+
+Ubuntu1604_64_Minimal:
+  <<: *baselinuxminimal
+  tags:
+    - ubuntu1604_64
 
 RaspianStretch_CLI:
   <<: *baselinuxcli
@@ -203,6 +217,24 @@ Android_noroot_Release:
     - echo "sdk.dir=${ANDROID_SDK}" >> local.properties
     - ./gradlew clean
     - ./gradlew --continue assembleNorootRelease
+
+Android_minimal:
+  <<: *androidbase
+  script:
+    - cd android
+    - echo "ndk.dir=${ANDROID_NDK}" > local.properties
+    - echo "sdk.dir=${ANDROID_SDK}" >> local.properties
+    - ./gradlew clean
+    - ./gradlew --continue assembleMinimalDebug
+
+Android_minimal_Release:
+  <<: *androidbase
+  script:
+    - cd android
+    - echo "ndk.dir=${ANDROID_NDK}" > local.properties
+    - echo "sdk.dir=${ANDROID_SDK}" >> local.properties
+    - ./gradlew clean
+    - ./gradlew --continue assembleMinimalRelease
 
 OSX:
   stage: build
