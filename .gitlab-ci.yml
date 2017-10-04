@@ -110,24 +110,27 @@ Nightly Copy Windows:
   script:
     - mkdir build; cd build
     - cmake .. -DCMAKE_BUILD_TYPE=DEBUG -DGUI=CLI -DVOIP=OFF
+    - make
+    - ctest -V
     - make package
-    - make test
 
 .tb_linux: &baselinux
   <<: *tb_def
   script:
     - mkdir build; cd build
     - cmake .. -DCMAKE_BUILD_TYPE=DEBUG
+    - make
+    - ctest -V
     - make package
-    - make test
 
 .tb_linuxminimal: &baselinuxminimal
   <<: *tb_def
   script:
     - mkdir build; cd build
     - cmake .. -DCMAKE_BUILD_TYPE=DEBUG -DQAULLOG_LOGGING_ENABLED=OFF
+    - make
+    - ctest -V
     - make package
-    - make test
 
 
 Ubuntu1604_64_CLI:
@@ -170,8 +173,9 @@ Ubuntu1604_64_Release:
   script:
     - mkdir build; cd build
     - cmake .. -DCMAKE_BUILD_TYPE=RELEASE
+    - make
+    - ctest -V
     - make package
-    - make test
   tags:
     - ubuntu1604_64
 
