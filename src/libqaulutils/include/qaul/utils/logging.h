@@ -24,13 +24,28 @@
 #ifndef __QAULLIB_UTILS_LOGGING_H
 #define __QAULLIB_UTILS_LOGGING_H
 
+#ifndef QAULLOG_NO_CONFIG
 #include "qaul/utils/config.h"
+#endif
 
-#include <errno.h>
+#ifndef QAULLOG_LOGGING_ENABLED
+
+// logging is turnend off, so define some dummies and bail out.
+#define QLOG_DEBUG(...)
+#define QLOG_INFO(...)
+#define QLOG_WARN(...)
+#define QLOG_ERROR(...)
+
+#else
+
+#ifdef __ANDROID__
+#include <android/log.h>
+#else
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
+#endif
 
 /**
  * The following log levels exist:
@@ -45,22 +60,34 @@
  * DEBUG => LOG_DEBUG => Log as debug message.
  *                       ERROR, WARN, INFO and DEBUG will be logged.
  */
-enum elog_level {
-    LOG_NONE = 0,
-    LOG_ERROR,
-    LOG_WARN,
-    LOG_INFO,
-    LOG_DEBUG,
-};
 
-typedef enum elog_level loglevel_t;
+#define LOG_NONE  0
+#define LOG_ERROR 1
+#define LOG_WARN  2
+#define LOG_INFO  3
+#define LOG_DEBUG 4
 
-#ifdef LOGGER_IMPLEMENTATION
-#ifndef QAUL_DEFAULT_LOGLEVEL
-#define QAUL_DEFAULT_LOGLEVEL LOG_DEBUG
+#ifdef QAULLOG_LOGLEVEL_MAX_ERROR
+#define QAULLOG_LOGLEVEL_MAX 1
+#elif defined QAULLOG_LOGLEVEL_MAX_WARN
+#define QAULLOG_LOGLEVEL_MAX 2
+#elif defined QAULLOG_LOGLEVEL_MAX_INFO
+#define QAULLOG_LOGLEVEL_MAX 3
+#elif defined QAULLOG_LOGLEVEL_MAX_DEBUG
+#define QAULLOG_LOGLEVEL_MAX 4
+#else
+#error "Something to fix"
 #endif
 
-loglevel_t loglevel = QAUL_DEFAULT_LOGLEVEL;
+typedef int loglevel_t;
+
+#ifdef LOGGER_IMPLEMENTATION
+
+#ifndef QAULLOG_LOGLEVEL_DEFAULT
+#define QAULLOG_LOGLEVEL_DEFAULT LOG_DEBUG
+#endif
+
+loglevel_t loglevel = QAULLOG_LOGLEVEL_DEFAULT;
 
 const char *const LOG_LEVEL_NAMES[] = {
     "NONE",
@@ -69,28 +96,12 @@ const char *const LOG_LEVEL_NAMES[] = {
     "INFO",
     "DEBUG"
 };
-#else
+#else // LOGGER_IMPLEMENTATION
 extern loglevel_t loglevel;
 extern const char *const LOG_LEVEL_NAMES[];
-#endif
+#endif // LOGGER_IMPLEMENTATION
 
 #define Ql_levelname(M) LOG_LEVEL_NAMES[M]
-
-/**
- * Log message as debug message.
- *
- * This message will be shown, when the program is compiled with log level
- * DEBUG.
- *
- * usage:
- * 	Ql_log_debug("My debug message");
- * 	Ql_log_debug("My %s message number %i", "debug", 2);
- */
-#ifdef NDEBUG
-#define Ql_log_debug(M, ...)
-#else
-#define Ql_log_debug(M, ...) Ql_logline(LOG_DEBUG, 0, M, ##__VA_ARGS__)
-#endif
 
 
 /**
@@ -103,7 +114,11 @@ extern const char *const LOG_LEVEL_NAMES[];
  * 	Ql_log_error("My Error message");
  * 	Ql_log_error("My %s message number %i", "error", 2);
  */
-#define Ql_log_error(M, ...) if ( LOG_ERROR <= loglevel ) Ql_logline(LOG_ERROR, 1, M , ##__VA_ARGS__)
+#if LOG_ERROR > QAULLOG_LOGLEVEL_MAX
+#define QLOG_ERROR(...)
+#else
+#define QLOG_ERROR(M, ...) if ( LOG_ERROR <= loglevel ) QLOG_LOGLINE(LOG_ERROR, M , ##__VA_ARGS__)
+#endif
 
 
 /**
@@ -116,7 +131,11 @@ extern const char *const LOG_LEVEL_NAMES[];
  * 	Ql_log_warn("My Error message");
  * 	Ql_log_warn("My %s message number %i", "warn", 2);
  */
-#define Ql_log_warn(M, ...) if ( LOG_WARN <= loglevel ) Ql_logline(LOG_WARN, 1, M , ##__VA_ARGS__)
+#if LOG_WARN > QAULLOG_LOGLEVEL_MAX
+#define QLOG_WARN(...)
+#else
+#define QLOG_WARN(M, ...) if ( LOG_WARN <= loglevel ) QLOG_LOGLINE(LOG_WARN, M , ##__VA_ARGS__)
+#endif
 
 
 /**
@@ -129,22 +148,43 @@ extern const char *const LOG_LEVEL_NAMES[];
  * 	Ql_log_info("My Error message");
  * 	Ql_log_info("My %s message number %i", "info", 2);
  */
-#define Ql_log_info(M, ...) if ( LOG_INFO <= loglevel ) Ql_logline(LOG_INFO, 0, M , ##__VA_ARGS__)
+#if LOG_INFO > QAULLOG_LOGLEVEL_MAX
+#define QLOG_INFO(...)
+#else
+#define QLOG_INFO(M, ...) if ( LOG_INFO <= loglevel ) QLOG_LOGLINE(LOG_INFO, M , ##__VA_ARGS__)
+#endif
 
+/**
+ * Log message as debug message.
+ *
+ * This message will be shown, when the program is compiled with log level
+ * DEBUG.
+ *
+ * usage:
+ * 	Ql_log_debug("My debug message");
+ * 	Ql_log_debug("My %s message number %i", "debug", 2);
+ */
+#if LOG_DEBUG > QAULLOG_LOGLEVEL_MAX
+#define QLOG_DEBUG(...)
+#else
+#define QLOG_DEBUG(M, ...) if ( LOG_DEBUG == loglevel ) QLOG_LOGLINE(LOG_DEBUG, M, ##__VA_ARGS__)
+#endif
 
-#define Ql_clean_errno() (errno == 0 ? "None" : strerror(errno))
+#ifdef __ANDROID__
+#define QLOG_LOGLINE(L, M, ...) { \
+    __android_log_print(ANDROID_ ## L , __FILE__, "(%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+} \
 
-#define Ql_logline(L, E, M, ...) { \
+#else
+#define QLOG_LOGLINE(L, M, ...) { \
     char date[20]; \
     struct timeval tv; \
     gettimeofday(&tv, NULL); \
     strftime(date, sizeof(date) / sizeof(*date), "%Y-%m-%dT%H:%M:%S", gmtime(&tv.tv_sec)); \
-    if ( E ) { \
-        fprintf(stderr, "%s.%03ldZ [%s] (%s:%d: errno: %s) " M "\n", &date[0], (tv.tv_usec/1000), Ql_levelname( L ), __FILE__, __LINE__, Ql_clean_errno(), ##__VA_ARGS__); \
-    } else { \
-        fprintf(stderr, "%s.%03ldZ [%s] (%s:%d) " M "\n", &date[0], (tv.tv_usec/1000), Ql_levelname( L ), __FILE__, __LINE__, ##__VA_ARGS__); \
-    } \
+    fprintf(stderr, "%s.%03ldZ [%s] (%s:%d) " M "\n", &date[0], (tv.tv_usec/1000), Ql_levelname( L ), __FILE__, __LINE__, ##__VA_ARGS__); \
 } \
+
+#endif
 
 #define Ql_check(A, M, ...) if(!(A)) { Ql_log_error(M, ##__VA_ARGS__); errno=0; goto Ql_error; }
 
@@ -156,5 +196,7 @@ extern const char *const LOG_LEVEL_NAMES[];
 
 loglevel_t getLogLevel(void);
 loglevel_t setLogLevel(loglevel_t newloglevel);
+
+#endif // QAULLOG_LOGGING_ENABLED
 
 #endif // __QAULLIB_UTILS__LOGGING_H

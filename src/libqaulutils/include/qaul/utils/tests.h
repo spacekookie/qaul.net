@@ -14,4 +14,9 @@
 #include "qaul/utils/defines.h"
 #define FAIL(M) printf(M); return(QL_ERROR);
 
+#define LOG_ALL QLOG_ERROR("ERROR Logged.\n"); \
+QLOG_WARN("WARNING Logged.\n"); \
+QLOG_INFO("INFO Logged.\n"); \
+QLOG_DEBUG("DEBUG Logged.\n"); \
+
 #endif // _TESTS_H

@@ -15,12 +15,12 @@ int Ql_sha1_file(char *filepath, unsigned char *hash)
     int ret;
     FILE *f;
 
-    Ql_log_debug("Ql_sha1_file %s", filepath);
+    QLOG_DEBUG("Ql_sha1_file %s", filepath);
 
     ret = 1;
     if((f = fopen(filepath, "rb")) == NULL)
     {
-    	Ql_log_error("Ql_sha1_file failed to open file: %s", filepath);
+    	QLOG_ERROR("Ql_sha1_file failed to open file: %s", filepath);
     	return 0;
     }
 
@@ -39,7 +39,7 @@ int Ql_sha1_filepointer(FILE *filepointer, unsigned char *hash)
 	mbedtls_sha1_context ctx;
     unsigned char buf[1024];
 
-    Ql_log_debug("Ql_sha1_filepointer");
+    QLOG_DEBUG("Ql_sha1_filepointer");
 
     ret = 1;
 	mbedtls_sha1_init(&ctx);
@@ -52,7 +52,7 @@ int Ql_sha1_filepointer(FILE *filepointer, unsigned char *hash)
 
     if(ferror(filepointer) != 0)
     {
-    	Ql_log_error("Ql_sha1_file file error on filepointer");
+    	QLOG_DEBUG("Ql_sha1_file file error on filepointer");
     	ret = 0;
         goto cleanup;
     }
@@ -70,7 +70,7 @@ int Ql_HashToString(unsigned char *hash, char *string)
 {
 	int i;
 
-	Ql_log_debug("Ql_HashToString");
+	QLOG_DEBUG("Ql_HashToString");
 
 	// FIXME: big-endian / little-endian
 	for(i=0;i<MAX_HASH_LEN;i++)

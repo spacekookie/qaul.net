@@ -2226,7 +2226,7 @@ void Ql_WwwWebSendMsg(struct mg_connection *conn, int event, void *event_data)
 	unsigned char userid[MAX_HASH_LEN];
 	struct http_message *hm = (struct http_message *) event_data;
 
-	Ql_log_debug("Ql_WwwWebSendMsg");
+	QLOG_DEBUG("Ql_WwwWebSendMsg");
 
 	// fill in data
 	msg_item.id = 0;
@@ -2411,7 +2411,7 @@ void Ql_WwwWebFileUpload(struct mg_connection *conn, int event, void *event_data
 	struct ql_file_upload_data *data = (struct ql_file_upload_data *) conn->user_data;
 	struct mg_http_multipart_part *mp = (struct mg_http_multipart_part*)event_data;
 
-	Ql_log_debug("Ql_WwwWebFileUpload");
+	QLOG_DEBUG("Ql_WwwWebFileUpload");
 
 	switch(event)
 	{
@@ -2430,7 +2430,7 @@ void Ql_WwwWebFileUpload(struct mg_connection *conn, int event, void *event_data
 
 				if (data->fp == NULL)
 				{
-					Ql_log_error("failed to open file");
+					QLOG_ERROR("failed to open file");
 
 					mg_printf(conn, "%s",
 							"HTTP/1.1 500 Failed to open a file\r\n"
@@ -2468,11 +2468,11 @@ void Ql_WwwWebFileUpload(struct mg_connection *conn, int event, void *event_data
 		{
 			if(data->part == 3)
 			{
-				Ql_log_debug("file name: %s", mp->file_name);
+				QLOG_DEBUG("file name: %s", mp->file_name);
 
 				if (fwrite(mp->data.p, 1, mp->data.len, data->fp) != mp->data.len)
 				{
-					Ql_log_error("failed to write to file");
+					QLOG_ERROR("failed to write to file");
 
 					mg_printf(conn, "%s",
 							  "HTTP/1.1 500 Failed to write to a file\r\n"
@@ -2526,7 +2526,7 @@ void Ql_WwwWebFileUpload(struct mg_connection *conn, int event, void *event_data
 				// create hash
 				if(Ql_sha1_filepointer(data->fp, file_item.hash) == 0)
 				{
-					Ql_log_error("failed to create hash from uploaded file");
+					QLOG_ERROR("failed to create hash from uploaded file");
 				}
 				else
 				{
@@ -2613,7 +2613,7 @@ void Ql_WwwWebFileUpload(struct mg_connection *conn, int event, void *event_data
 						size = size + sizeof(struct olsrmsg);
 						m->v4.olsr_msgsize = htons(size);
 
-						Ql_log_debug("olsr message: name: %s, msg: %s, size: %i, status: %i\n", qaul_username, local_msg, size, file_item.status);
+						QLOG_DEBUG("olsr message: name: %s, msg: %s, size: %i, status: %i\n", qaul_username, local_msg, size, file_item.status);
 
 						// send package
 						Qaullib_IpcSend(m);
